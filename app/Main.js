@@ -15,7 +15,7 @@ function Main() {
       <Routes>
         <Route path="/" element={<HomeGuest />} />
         <Route path="/about-us" element={<About />} />
-        <Route path="/" element={<Terms />} />
+        <Route path="/terms" element={<Terms />} />
       </Routes>
       <Footer />
     </BrowserRouter>

@@ -12,10 +12,12 @@ const Footer = () => {
         <Link className="mx-1" to="/about-us">
           About Us
         </Link>{" "}
-        |{" "} 
+        |{" "}
         <Link className="mx-1" to="/terms">
           Terms
-        </Link></p>
+        </Link>{" "}
+        |{" "}
+      </p>
     <p className="m-0">Copyright &copy; {new Date().getFullYear()} <a href="/" className="text-muted">ComplexApp</a>. All rights reserved.</p>
   </footer>
   )

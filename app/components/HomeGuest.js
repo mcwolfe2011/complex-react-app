@@ -1,9 +1,9 @@
 import React from 'react'
-import Container from './Container';
+import Page from './Page';
 
 const HomeGuest = () => {
   return (
-    <Container wide={true}>
+    <Page title="Welcome to Social Media App" wide={true}>
     <div className="row align-items-center">
       <div className="col-lg-7 py-3 py-md-5">
         <h1 className="display-3">Remember Writing?</h1>
@@ -40,7 +40,7 @@ const HomeGuest = () => {
         </form>
       </div>
     </div>
-    </Container>
+    </Page>
   )
 }
 

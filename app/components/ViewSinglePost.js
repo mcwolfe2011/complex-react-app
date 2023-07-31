@@ -1,12 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import Page from "./Page";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import Axios from "axios";
 import LoadingDotsIcon from "./LoadingDotsIcon";
 import ReactMarkdown from "react-markdown";
 import NotFound from "./NotFound";
+import StateContext from "../StateContext";
+import DispatchContext from "../DispatchContext";
 
 function ViewSinglePost() {
+  const navigate = useNavigate();
+  const appState = useContext(StateContext);
+  const appDispatch = useContext(DispatchContext);
   const { id } = useParams();
   const [isLoading, setIsLoading] = useState(true);
   const [post, setPost] = useState();
@@ -47,22 +52,61 @@ function ViewSinglePost() {
     date.getMonth() + 1
   }/${date.getDate()}/${date.getFullYear()}`;
 
+  function isOwner() {
+    if (appState.loggedIn) {
+      return appState.user.username == post.author.username;
+    }
+    return false;
+  }
+
+  async function deleteHandler() {
+    const areYouSure = window.confirm(
+      "Do you really want to delete this post?"
+    );
+    if (areYouSure) {
+      try {
+        const response = await Axios.delete(`/post/${id}`, {
+          data: { token: appState.user.token }
+        });
+        if (response.data == "Success") {
+          // 1. display a flash message
+          appDispatch({
+            type: "flashMessage",
+            value: "Post was successfully deleted."
+          });
+
+          // 2. redirect back to the current user's profile
+          navigate(`/profile/${appState.user.username}`);
+        }
+      } catch (e) {
+        console.log("There was a problem.");
+      }
+    }
+  }
+
   return (
     <Page title={post.title}>
       <div className="d-flex justify-content-between">
         <h2>{post.title}</h2>
-        <span class="pt-2">
-          <Link
-            to={`/post/${post._id}/edit`}
-            className="text-primary mr-2"
-            title="Edit"
-          >
-            <i className="fas fa-edit"></i>
-          </Link>{" "}
-          <a className="delete-post-button text-danger" title="Delete">
-            <i className="fas fa-trash"></i>
-          </a>
-        </span>
+
+        {isOwner() && (
+          <span class="pt-2">
+            <Link
+              to={`/post/${post._id}/edit`}
+              className="text-primary mr-2"
+              title="Edit"
+            >
+              <i className="fas fa-edit"></i>
+            </Link>{" "}
+            <a
+              onClick={deleteHandler}
+              className="delete-post-button text-danger"
+              title="Delete"
+            >
+              <i className="fas fa-trash"></i>
+            </a>
+          </span>
+        )}
       </div>
 
       <p className="text-muted small mb-4">
